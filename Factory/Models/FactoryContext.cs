@@ -11,4 +11,14 @@ public class FactoryContext : DbContext
     public DbSet<License> Licenses { get; set; }
 
     public FactoryContext(DbContextOptions options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Create composite pk for join tables
+        modelBuilder.Entity<EngineerLicense>()
+            .HasKey(el => new { el.EngineerId, el.LicenseId });
+        modelBuilder.Entity<MachineLicense>()
+            .HasKey(ml => new { ml.MachineId, ml.LicenseId });
+    }
+
 }
