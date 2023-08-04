@@ -23,7 +23,9 @@
     <ul>
         @foreach (Machine machine in Model.Machines)
         {
-            <li>@machine.Make @machine.Model</li>
+            <li>
+                <a href="/machines/details/machin.MachineId">@machine.Make @machine.Model</a>
+            </li>
         }
     </ul>
 }
