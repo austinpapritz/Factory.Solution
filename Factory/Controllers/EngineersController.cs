@@ -7,10 +7,10 @@ using System.Diagnostics;
 
 namespace Factory.Controllers;
 
-public class FactoryController : Controller
+public class EngineersController : Controller
 {
     private readonly FactoryContext _db;
-    public FactoryController(FactoryContext db)
+    public EngineersController(FactoryContext db)
     {
         _db = db;
     }
