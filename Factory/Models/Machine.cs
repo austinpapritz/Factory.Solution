@@ -8,6 +8,7 @@ public class Machine
     public string Country { get; set; }
     public string Make { get; set; }
     public string Model { get; set; }
+    public virtual ICollection<Engineer> Engineers { get; set; }
     public ICollection<MachineLicense> MachineLicenses { get; set; }
 
 }

@@ -7,10 +7,10 @@ using System.Diagnostics;
 
 namespace Factory.Controllers;
 
-public class EngineersController : Controller
+public class MachinesController : Controller
 {
     private readonly FactoryContext _db;
-    public EngineersController(FactoryContext db)
+    public MachinesController(FactoryContext db)
     {
         _db = db;
     }
@@ -24,9 +24,9 @@ public class EngineersController : Controller
     public IActionResult Details(int id)
     {
         Machine model = _db.Machines
-            .Include(e => e.MachineLicenses)
-            .ThenInclude(el => el.License)
-            .FirstOrDefault(e => e.MachineId == id);
+            .Include(m => m.MachineLicenses)
+            .ThenInclude(ml => ml.License)
+            .FirstOrDefault(m => m.MachineId == id);
 
         if (model == null)
         {
@@ -36,10 +36,14 @@ public class EngineersController : Controller
         // Fetch the Machine's Licenses to add qualified engineers to model.
         List<int> machineLicenseIds = model.MachineLicenses.Select(ml => ml.LicenseId).ToList();
 
-        // Add to model Engineers qualified to work on machine
-        model.Engineers = _db.Engineers
+        // Get all Engineers with their Licenses.
+        var engineers = _db.Engineers
             .Include(e => e.EngineerLicenses)
-            .Where(e => e.EngineerLicenses.All(el => machineLicenseIds.Contains(el.LicenseId)))
+            .ToList();
+
+        // Add to model Engineers who have every license to work on the machine.
+        model.Engineers = engineers
+            .Where(e => machineLicenseIds.All(id => e.EngineerLicenses.Any(el => el.LicenseId == id)))
             .ToList();
 
         return View(model);
