@@ -23,12 +23,24 @@ public class EngineersController : Controller
 
     public IActionResult Details(int id)
     {
-        Engineer model = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+        Engineer model = _db.Engineers
+            .Include(e => e.EngineerLicenses)
+            .ThenInclude(el => el.License)
+            .FirstOrDefault(e => e.EngineerId == id);
 
         if (model == null)
         {
             return NotFound();
         }
+
+        // Fetch the Engineer's Licenses to add appropriate machines to model.
+        List<int> engineerLicenseIds = model.EngineerLicenses.Select(el => el.LicenseId).ToList();
+
+        // Add to model Machines for which the Engineer is licensed.
+        model.Machines = _db.Machines
+            .Include(m => m.MachineLicenses)
+            .Where(m => m.MachineLicenses.Any(ml => engineerLicenseIds.Contains(ml.LicenseId)))
+            .ToList();
 
         return View(model);
     }
