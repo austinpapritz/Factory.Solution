@@ -21,10 +21,14 @@ namespace Factory.Models
                     // List of Licenses.
                     var licenses = new List<License>
                     {
-                        new License { Name = "Heavy" },
-                        new License { Name = "HighTemp" },
+                        new License { Name = "Heavy Machinery" },
+                        new License { Name = "High Temp" },
                         new License { Name = "Hydraulics" },
                         new License { Name = "Emissions" }
+                        new License { Name = "Kill Switch" }
+                        new License { Name = "Respirator" }
+                        new License { Name = "Caustic" }
+                        new License { Name = "Steam" }
                     };
                     context.Licenses.AddRange(licenses);
                     context.SaveChanges();

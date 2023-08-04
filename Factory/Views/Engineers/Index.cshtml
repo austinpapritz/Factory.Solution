@@ -12,6 +12,8 @@
 <ul>
     @foreach (Engineer engineer in Model)
     {
-			<li>@engineer.Name</li>
+			<li>
+                <a href="/engineers/details/@engineer.EngineerId">@engineer.Name</a>
+            </li>
     }
 </ul>
