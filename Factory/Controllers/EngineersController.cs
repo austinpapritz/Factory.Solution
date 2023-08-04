@@ -39,7 +39,7 @@ public class EngineersController : Controller
         // Add to model Machines for which the Engineer is licensed.
         model.Machines = _db.Machines
             .Include(m => m.MachineLicenses)
-            .Where(m => m.MachineLicenses.Any(ml => engineerLicenseIds.Contains(ml.LicenseId)))
+            .Where(m => m.MachineLicenses.All(ml => engineerLicenseIds.Contains(ml.LicenseId)))
             .ToList();
 
         return View(model);

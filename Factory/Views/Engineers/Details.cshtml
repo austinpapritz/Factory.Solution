@@ -15,9 +15,16 @@
 
 <h3>Qualified Machines</h3>
 
-<ul>
-@foreach (Machine machine in Model.Machines)
+@if (Model.Machines.Count == 0)
 {
-    <li>@machine.Make @machine.Model</li>
+    <p>None</p>
+} else
+{
+    <ul>
+        @foreach (Machine machine in Model.Machines)
+        {
+            <li>@machine.Make @machine.Model</li>
+        }
+    </ul>
 }
-</ul>
+
