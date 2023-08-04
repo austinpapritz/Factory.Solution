@@ -6,7 +6,7 @@ public class MachineLicense
 {
     public int MachineId { get; set; }
     public Machine Machine { get; set; }
-    public string LicenseId { get; set; }
+    public int LicenseId { get; set; }
     public License License { get; set; }
 
 }
