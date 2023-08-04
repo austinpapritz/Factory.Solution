@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Engineer Form";
+}
+
+@model Engineer
+
+<h3>@ViewData["Title"]</h3>
+
+<form asp-action="@ViewData["FormAction"]" asp-controller="Engineers" method="post">
+    @Html.AntiForgeryToken()
+
+    @* IF form is being used to edit, then attach the Id to model. *@
+    @if (Model != null && Model.Id != 0)
+    {
+        @Html.HiddenFor(m => m.Id)
+    }
+
+    @* Name *@
+    <div class="form-group">   
+        <label asp-for="Name" class="control-label">Name: </label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="@ViewData["SubmitButton"]" class="btn btn-primary" />
+    </div>
+</form>
+
+<p>@Html.ValidationSummary(true, "", new { @class="text-danger" })</p>
