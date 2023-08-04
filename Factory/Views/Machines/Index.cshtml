@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Machines Page";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (@Model.Count == 0)
+{
+	<h3>There's nothing here</h3>
+}
+
+<ul>
+    @foreach (Machine machine in Model)
+    {
+			<li>
+                <a href="/machines/details/@machine.MachineId">@machine.Make @machine.Model</a>
+            </li>
+    }
+</ul>

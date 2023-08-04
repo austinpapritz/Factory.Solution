@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = $"{@Model.Make} {@Model.Model} Details";
+}
+
+<h1>Details for @Model.Make @Model.Make</h1>
+
+<h3>Required licenses: </h3>
+
+<ul>
+@foreach (MachineLicense ml in Model.MachineLicenses)
+{
+    <li>@ml.License.Name</li>
+}
+</ul>
+
+<h3>Qualified Engineers</h3>
+
+@if (Model.Engineers.Count == 0)
+{
+    <p>None</p>
+} 
+else
+{
+    <ul>
+        @foreach (Engineer engineer in Model.Engineers)
+        {
+            <li>
+                <a href="/engineers/details/@engineer.EngineerId">@engineer.Name</a>
+            </li>
+        }
+    </ul>
+}
+
