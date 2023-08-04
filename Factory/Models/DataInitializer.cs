@@ -17,18 +17,14 @@ public class DataInitializer
             context.Database.Migrate();
 
             // If there's already stuff in db, don't run.
-            if (context.ExampleModels.Any())
+            if (context.License.Any())
             {
                 return;
             }
-
-            var exampleModel = new ExampleModel[]
+            else
             {
-                new ExampleModel { Name = "Example Name"}
-            };
-
-            context.ExampleModels.AddRange(exampleModel);
-            context.SaveChanges();
+                return;
+            }
         }
     }
 }
