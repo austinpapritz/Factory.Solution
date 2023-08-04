@@ -10,9 +10,9 @@
     @Html.AntiForgeryToken()
 
     @* IF form is being used to edit, then attach the Id to model. *@
-    @if (Model != null && Model.Id != 0)
+    @if (Model != null && Model.EngineerId != 0)
     {
-        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.EngineerId)
     }
 
     @* Name *@
