@@ -49,6 +49,7 @@ namespace Factory.Models
                     {
                         var machine = new Machine
                         {
+                            Country = $"Country{i}",
                             Make = $"Make{i}",
                             Model = $"Model{i}",
                             MachineLicenses = licenses
