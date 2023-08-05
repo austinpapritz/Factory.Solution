@@ -188,6 +188,24 @@ public class EngineersController : Controller
         return RedirectToAction("edit", new { id = engineer.EngineerId });
     }
 
+    // Handled by site.js.
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+        Engineer engineerToBeDeleted = _db.Engineers.FirstOrDefault(s => s.EngineerId == id);
+
+        if (engineerToBeDeleted == null)
+        {
+            return NotFound();
+        }
+
+        _db.Engineers.Remove(engineerToBeDeleted);
+        _db.SaveChanges();
+
+        // Return HTTP 200 OK to AJAX request, signalling successful deletion.
+        return Ok();
+    }
+
     // Method to validate model in db.
     private bool EngineerExists(int id)
     {
