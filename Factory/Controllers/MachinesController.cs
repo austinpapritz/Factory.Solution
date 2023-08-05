@@ -34,7 +34,7 @@ public class MachinesController : Controller
         }
 
         // Fetch the Machine's Licenses to add qualified engineers to model.
-        List<int> machineLicenseIds = model.MachineLicenses.Select(ml => ml.LicenseId).ToList();
+        HashSet<int> machineLicenseIds = model.MachineLicenses.Select(ml => ml.LicenseId).ToList();
 
         // Get all Engineers with their EngineerLicenses.
         List<Engineer> engineers = _db.Engineers
