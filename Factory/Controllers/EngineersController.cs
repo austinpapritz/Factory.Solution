@@ -117,25 +117,25 @@ public class EngineersController : Controller
         // Fetch licenses.
         List<License> licenses = _db.Licenses.ToList();
 
-        // Mark the licenses that the engineer already has.
+        // Mark the licenses that the engineer already has. Add this list to ViewBag.
         foreach (var license in licenses)
         {
             license.IsSelected = engineerToBeEdited.EngineerLicenses?.Any(el => el.LicenseId == license.LicenseId) ?? false;
         }
+        ViewBag.Licenses = licenses;
 
 
 
         // Both Create and Edit routes use `Form.cshtml`. Add Licenses to ViewBag.
         ViewData["FormAction"] = "Edit";
         ViewData["SubmitButton"] = "Update Engineer";
-        ViewBag.Licenses = licenses;
 
         return View("Form", engineerToBeEdited);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, [Bind("EngineerId,Name")] Engineer engineer)
+    public IActionResult Edit(int id, [Bind("EngineerId,Name")] Engineer engineer, List<int> selectedLicenseIds)
     {
         // Ensure id from form and url match.
         if (id != engineer.EngineerId)
@@ -145,12 +145,29 @@ public class EngineersController : Controller
 
         if (ModelState.IsValid)
         {
-            // Try to update changes, catch any ConcurrencyExceptions.
+            // Try to update changes
             try
             {
-                _db.Update(engineer);
+                // Load the engineer from the database, including the current licenses.
+                var dbEngineer = _db.Engineers
+                    .Include(e => e.EngineerLicenses)
+                    .Single(e => e.EngineerId == id);
+
+                // Update the name.
+                dbEngineer.Name = engineer.Name;
+
+                // Clear the current licenses and add the selected ones.
+                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST
+                dbEngineer.EngineerLicenses.Clear();
+                foreach (var licenseId in selectedLicenseIds)
+                {
+                    dbEngineer.EngineerLicenses.Add(new EngineerLicense { LicenseId = licenseId });
+                }
+
+                _db.Update(dbEngineer);
                 _db.SaveChanges();
             }
+            // Catch any ConcurrencyExceptions.
             catch (DbUpdateConcurrencyException)
             {
                 if (!EngineerExists(engineer.EngineerId))
