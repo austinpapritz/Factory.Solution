@@ -57,7 +57,7 @@ namespace Factory.Models
                             Make = $"Make{i}",
                             Model = $"Model{i}",
                             MachineLicenses = licenses
-                                .Where(l => rand.Next(2) == 0) // For every license, pick num less than 2 (0 or 1), if the random number is 0 include that license.
+                                .Where(l => rand.Next(3) == 0) // For every license, pick num less than 3 (0-2), if the random number is 0 include that license.
                                 .Select(l => new MachineLicense { License = l }) // Create a `MachineLicense` for every License selected above.
                                 .ToList()
                         };

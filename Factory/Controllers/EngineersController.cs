@@ -15,6 +15,7 @@ public class EngineersController : Controller
         _db = db;
     }
 
+
     public ActionResult Index()
     {
         List<Engineer> model = _db.Engineers.ToList();
@@ -45,6 +46,7 @@ public class EngineersController : Controller
         return View(model);
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         // Both Create and Edit routes use `Form.cshtml`
@@ -66,20 +68,40 @@ public class EngineersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create([Bind("Name")] Engineer engineer)
+    public IActionResult Create([Bind("Name")] Engineer engineer, List<int> selectedLicenseIds)
     {
         if (ModelState.IsValid)
         {
+            // Add selected Licenses to engineer's EngineerLicenses list.
+            engineer.EngineerLicenses = new List<EngineerLicense>();
+            foreach (var licenseId in selectedLicenseIds)
+            {
+                engineer.EngineerLicenses.Add(new EngineerLicense { LicenseId = licenseId });
+            }
+
+            // Add engineer to Engineer's table.
             _db.Engineers.Add(engineer);
             _db.SaveChanges();
 
             return RedirectToAction("Index");
         }
+
+        // If anything goes wrong, reload form.
+        // Add list of Licenses to ViewBag
+        ViewBag.Licenses = _db.Licenses
+            .Select(l => new License
+            {
+                LicenseId = l.LicenseId,
+                Name = l.Name,
+                IsSelected = false
+            })
+            .ToList();
         ViewData["FormAction"] = "Create";
         ViewData["SubmitButton"] = "Add Engineer";
         return View("Form");
     }
 
+    [HttpGet]
     public IActionResult Edit(int id)
     {
         // Fetch engineer and included their EngineerLicenses
