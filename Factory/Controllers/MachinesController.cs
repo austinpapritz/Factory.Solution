@@ -137,6 +137,68 @@ public class MachinesController : Controller
         return View("Form", machineToBeEdited);
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, [Bind("MachineId,Country,Make,Model")] Machine machine, List<int> selectedLicenseIds)
+    {
+        // Ensure id from form and url match.
+        if (id != machine.MachineId)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+
+            try
+            {
+                // Load the machine from the database, including the current licenses.
+                var dbMachine = _db.Machines
+                    .Include(m => m.MachineLicenses)
+                    .Single(m => m.MachineId == id);
+
+                // Update machine fields.
+                dbMachine.Country = machine.Country;
+                dbMachine.Make = machine.Make;
+                dbMachine.Model = machine.Model;
+
+                // Clear the current licenses and add the selected ones.
+                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST
+                dbMachine.MachineLicenses.Clear();
+                foreach (var licenseId in selectedLicenseIds)
+                {
+                    dbMachine.MachineLicenses.Add(new MachineLicense { LicenseId = licenseId });
+                }
+
+                _db.Update(dbMachine);
+                _db.SaveChanges();
+            }
+            // Catch any ConcurrencyExceptions.
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MachineExists(machine.MachineId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("details", "machines", new { id = machine.MachineId });
+        }
+
+        // Otherwise reload form.
+        ViewData["FormAction"] = "Edit";
+        ViewData["SubmitButton"] = "Update Machine";
+        return RedirectToAction("edit", new { id = machine.MachineId });
+    }
+
+    // Method to validate model in db.
+    private bool MachineExists(int id)
+    {
+        return _db.Machines.Any(m => m.MachineId == id);
+    }
 
 
 
