@@ -104,5 +104,40 @@ public class MachinesController : Controller
         return View("Form");
     }
 
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        // Fetch machine and included their MachineLicenses
+        Machine machineToBeEdited = _db.Machines
+            .Include(m => m.MachineLicenses)
+            .FirstOrDefault(m => m.MachineId == id);
+
+        if (machineToBeEdited == null)
+        {
+            return NotFound();
+        }
+
+        // Fetch licenses.
+        List<License> licenses = _db.Licenses.ToList();
+
+        // Mark the licenses that the machine already has. Add this list to ViewBag.
+        foreach (var license in licenses)
+        {
+            // "Set `IsSelected` true for each of the machine's licenses, otherwise set it false.
+            license.IsSelected = machineToBeEdited.MachineLicenses?.Any(ml => ml.LicenseId == license.LicenseId) ?? false;
+        }
+        ViewBag.Licenses = licenses;
+
+
+
+        // Both Create and Edit routes use `Form.cshtml`. Add Licenses to ViewBag.
+        ViewData["FormAction"] = "Edit";
+        ViewData["SubmitButton"] = "Update Machine";
+
+        return View("Form", machineToBeEdited);
+    }
+
+
+
 
 }
