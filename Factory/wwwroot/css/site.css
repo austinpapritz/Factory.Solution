@@ -24,3 +24,13 @@ body {
 .form-group .btn {
   margin-top: 5px;
 }
+
+.lists-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.content-container {
+  margin: 0 50px;
+}

@@ -192,7 +192,7 @@ public class EngineersController : Controller
     [HttpPost]
     public IActionResult Delete(int id)
     {
-        Engineer engineerToBeDeleted = _db.Engineers.FirstOrDefault(s => s.EngineerId == id);
+        Engineer engineerToBeDeleted = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
 
         if (engineerToBeDeleted == null)
         {
