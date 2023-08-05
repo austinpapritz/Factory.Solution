@@ -56,7 +56,7 @@ public class MachinesController : Controller
         ViewData["FormAction"] = "Create";
         ViewData["SubmitButton"] = "Add Machine";
 
-        // Add list of Licenses to ViewBag
+        // Add list of Licenses to ViewBag.
         ViewBag.Licenses = _db.Licenses
             .Select(l => new License
             {
@@ -90,7 +90,6 @@ public class MachinesController : Controller
         }
 
         // If anything goes wrong, reload form.
-        // Add list of Licenses to ViewBag
         ViewBag.Licenses = _db.Licenses
             .Select(l => new License
             {
@@ -107,7 +106,7 @@ public class MachinesController : Controller
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        // Fetch machine and included their MachineLicenses
+        // Fetch machine and included their MachineLicenses.
         Machine machineToBeEdited = _db.Machines
             .Include(m => m.MachineLicenses)
             .FirstOrDefault(m => m.MachineId == id);
@@ -117,20 +116,21 @@ public class MachinesController : Controller
             return NotFound();
         }
 
-        // Fetch licenses.
+        // Fetch all licenses.
         List<License> licenses = _db.Licenses.ToList();
 
-        // Mark the licenses that the machine already has. Add this list to ViewBag.
+        // Mark the licenses that the machine already has. Add licenses list to ViewBag.
         foreach (var license in licenses)
         {
-            // "Set `IsSelected` true for each of the machine's licenses, otherwise set it false.
+            // "Set `IsSelected` true for each of the machine's licenses and false for all the others. This is to render check boxes.
+            // `?. [..] ?? false` covers if `MachineLincenses` is null, it'll just set every `license.IsSelected` to `false`.
             license.IsSelected = machineToBeEdited.MachineLicenses?.Any(ml => ml.LicenseId == license.LicenseId) ?? false;
         }
         ViewBag.Licenses = licenses;
 
 
 
-        // Both Create and Edit routes use `Form.cshtml`. Add Licenses to ViewBag.
+        // Both Create and Edit routes use `Form.cshtml`.
         ViewData["FormAction"] = "Edit";
         ViewData["SubmitButton"] = "Update Machine";
 
@@ -163,7 +163,7 @@ public class MachinesController : Controller
                 dbMachine.Model = machine.Model;
 
                 // Clear the current licenses and add the selected ones.
-                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST
+                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST.
                 dbMachine.MachineLicenses.Clear();
                 foreach (var licenseId in selectedLicenseIds)
                 {
@@ -217,7 +217,4 @@ public class MachinesController : Controller
     {
         return _db.Machines.Any(m => m.MachineId == id);
     }
-
-
-
 }

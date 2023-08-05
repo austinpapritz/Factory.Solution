@@ -87,7 +87,6 @@ public class EngineersController : Controller
         }
 
         // If anything goes wrong, reload form.
-        // Add list of Licenses to ViewBag
         ViewBag.Licenses = _db.Licenses
             .Select(l => new License
             {
@@ -104,7 +103,7 @@ public class EngineersController : Controller
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        // Fetch engineer and included their EngineerLicenses
+        // Fetch engineer and included their EngineerLicenses.
         Engineer engineerToBeEdited = _db.Engineers
             .Include(e => e.EngineerLicenses)
             .FirstOrDefault(e => e.EngineerId == id);
@@ -114,19 +113,21 @@ public class EngineersController : Controller
             return NotFound();
         }
 
-        // Fetch licenses.
+        // Fetch all licenses.
         List<License> licenses = _db.Licenses.ToList();
 
-        // Mark the licenses that the engineer already has. Add this list to ViewBag.
+        // Mark the licenses that the engineer already has. Add licenses list to ViewBag.
         foreach (var license in licenses)
         {
+            // "Set `IsSelected` true for each of the machine's licenses and false for all the others. This is to render check boxes.
+            // `?. [..] ?? false` covers if `MachineLincenses` is null, it'll just set every `license.IsSelected` to `false`.
             license.IsSelected = engineerToBeEdited.EngineerLicenses?.Any(el => el.LicenseId == license.LicenseId) ?? false;
         }
         ViewBag.Licenses = licenses;
 
 
 
-        // Both Create and Edit routes use `Form.cshtml`. Add Licenses to ViewBag.
+        // Both Create and Edit routes use `Form.cshtml`.
         ViewData["FormAction"] = "Edit";
         ViewData["SubmitButton"] = "Update Engineer";
 
@@ -145,7 +146,6 @@ public class EngineersController : Controller
 
         if (ModelState.IsValid)
         {
-            // Try to update changes
             try
             {
                 // Load the engineer from the database, including the current licenses.
@@ -157,7 +157,7 @@ public class EngineersController : Controller
                 dbEngineer.Name = engineer.Name;
 
                 // Clear the current licenses and add the selected ones.
-                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST
+                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST.
                 dbEngineer.EngineerLicenses.Clear();
                 foreach (var licenseId in selectedLicenseIds)
                 {
