@@ -69,6 +69,40 @@ public class MachinesController : Controller
         return View("Form");
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create([Bind("Country,Make,Model")] Machine machine, List<int> selectedLicenseIds)
+    {
+        if (ModelState.IsValid)
+        {
+            // Add selected Licenses to machines's MachineLicenses list.
+            machine.MachineLicenses = new List<MachineLicense>();
+            foreach (var licenseId in selectedLicenseIds)
+            {
+                machine.MachineLicenses.Add(new MachineLicense { LicenseId = licenseId });
+            }
+
+            // Add machine to Machine's table.
+            _db.Machines.Add(machine);
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        // If anything goes wrong, reload form.
+        // Add list of Licenses to ViewBag
+        ViewBag.Licenses = _db.Licenses
+            .Select(l => new License
+            {
+                LicenseId = l.LicenseId,
+                Name = l.Name,
+                IsSelected = false
+            })
+            .ToList();
+        ViewData["FormAction"] = "Create";
+        ViewData["SubmitButton"] = "Add Machine";
+        return View("Form");
+    }
 
 
 }
