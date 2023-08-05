@@ -13,7 +13,9 @@
     @foreach (Engineer engineer in Model)
     {
 			<li>
-                <a href="/engineers/details/@engineer.EngineerId">@engineer.Name</a>
+                @engineer.Name
+                <a href="/engineers/details/@engineer.EngineerId">🔎</a>
+                <a href="/engineers/edit/@engineer.EngineerId">✏️</a>
             </li>
     }
 </ul>

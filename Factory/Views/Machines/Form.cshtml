@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Machine Form";
+}
+
+@model Machine
+
+<h3>@ViewData["Title"]</h3>
+
+<form asp-action="@ViewData["FormAction"]" asp-controller="Machines" method="post">
+    @Html.AntiForgeryToken()
+
+    @* IF form is being used to edit, then attach the Id to model. *@
+    @if (Model != null && Model.MachineId != 0)
+    {
+        @Html.HiddenFor(m => m.MachineId)
+    }
+
+    @* Country *@
+    <div class="form-group">   
+        <label asp-for="Country" class="control-label">Country: </label>
+        <input asp-for="Country" class="form-control" />
+        <span asp-validation-for="Country" class="text-danger"></span>
+    </div>
+
+    @* Make *@
+    <div class="form-group">   
+        <label asp-for="Make" class="control-label">Make: </label>
+        <input asp-for="Make" class="form-control" />
+        <span asp-validation-for="Make" class="text-danger"></span>
+    </div>
+
+    @* Model *@
+    <div class="form-group">   
+        <label asp-for="Model" class="control-label">Model: </label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+
+    @* Licenses *@
+    <div class="form-group">
+        <label class="control-label">Licenses: </label>
+        @foreach (var license in ViewBag.Licenses)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="selectedLicenseIds" value="@license.LicenseId" 
+                    checked="@license.IsSelected" />
+                <label class="form-check-label">@license.Name</label>
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="@ViewData["SubmitButton"]" class="btn btn-primary" />
+    </div>
+</form>
+
+<p>@Html.ValidationSummary(false, "", new { @class="text-danger" })</p>
