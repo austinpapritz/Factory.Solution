@@ -13,7 +13,9 @@
     @foreach (Machine machine in Model)
     {
 			<li>
-                <a href="/machines/details/@machine.MachineId">@machine.Make @machine.Model</a>
+                @machine.Make @machine.Model
+                <a href="/machines/details/@machine.MachineId">🔎</a>
+                <a href="/machines/edit/@machine.MachineId">✏️</a>
             </li>
     }
 </ul>
