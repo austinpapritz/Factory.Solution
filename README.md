@@ -1,7 +1,5 @@
-Add license select options to engineer form
-Add Controller and view for machines
+Do README
 
-Move list views to splash page.
+Create New License form, controller and view
 
-Add a Blacklist to License
-
+Spruce up splash page

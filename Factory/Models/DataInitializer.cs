@@ -48,6 +48,22 @@ namespace Factory.Models
                         context.Engineers.Add(engineer);
                     }
 
+                    // Add an `Engineer` with all licenses and one with no licenses for testing.
+                    var engineerWithAllLicenses = new Engineer
+                    {
+                        Name = "Engineer With All Licenses",
+                        EngineerLicenses = licenses
+                            .Select(l => new EngineerLicense { License = l })
+                            .ToList()
+                    };
+                    context.Engineers.Add(engineerWithAllLicenses);
+
+                    var engineerWithNoLicenses = new Engineer
+                    {
+                        Name = "Engineer With No Licenses",
+                    };
+                    context.Engineers.Add(engineerWithNoLicenses);
+
                     // Seeding 15 Machines with random licenses.
                     for (int i = 1; i <= 15; i++)
                     {
