@@ -24,6 +24,7 @@ public class EngineersController : Controller
 
     public IActionResult Details(int id)
     {
+        // Get the engineer that has the EngineerId that matches the url id, include the EngineerLicenses and corresponding Licenses too.
         Engineer model = _db.Engineers
             .Include(e => e.EngineerLicenses)
             .ThenInclude(el => el.License)
@@ -34,14 +35,19 @@ public class EngineersController : Controller
             return NotFound();
         }
 
-        // Fetch the Engineer's Licenses to add appropriate machines to model.
-        List<int> engineerLicenseIds = model.EngineerLicenses.Select(el => el.LicenseId).ToList();
+        // Get the engineer's EngineerLicenses and assign the corresponding LicenseId to a HashSet.
+        // .Contains() instantly finds items in HashSet, whereas a List must be searched linearly.
+        HashSet<int> engineerLicenseIds = model.EngineerLicenses.Select(el => el.LicenseId).ToHashSet();
 
-        // Add to model Machines for which the Engineer is licensed.
-        model.Machines = _db.Machines
+        // This filters out the machines that the engineer is licensed to repair.
+        // For every machine's MachineLicenses, check if the corresponding LicenseId matches the LicenseIds on the engineer's EngineerLicenses.
+        List<Machine> qualifiedMachines = _db.Machines
             .Include(m => m.MachineLicenses)
             .Where(m => m.MachineLicenses.All(ml => engineerLicenseIds.Contains(ml.LicenseId)))
             .ToList();
+
+        // This assigns the list of machines that the engineer can repair to the model.
+        model.Machines = qualifiedMachines;
 
         return View(model);
     }
@@ -53,7 +59,7 @@ public class EngineersController : Controller
         ViewData["FormAction"] = "Create";
         ViewData["SubmitButton"] = "Add Engineer";
 
-        // Add list of Licenses to ViewBag
+        // Add list of Licenses to ViewBag, setting `IsSelected = false' so that license checklist start unchecked.
         ViewBag.Licenses = _db.Licenses
             .Select(l => new License
             {
@@ -72,10 +78,12 @@ public class EngineersController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Create a new EngineerLicenses HashSet to populate with selected licenses.
+            engineer.EngineerLicenses = new HashSet<EngineerLicense>();
             // Add selected Licenses to engineer's EngineerLicenses list.
-            engineer.EngineerLicenses = new List<EngineerLicense>();
-            foreach (var licenseId in selectedLicenseIds)
+            foreach (int licenseId in selectedLicenseIds)
             {
+                // Create a new EngineerLicense for every License selected, assign the LicenseId to it.
                 engineer.EngineerLicenses.Add(new EngineerLicense { LicenseId = licenseId });
             }
 
@@ -116,7 +124,7 @@ public class EngineersController : Controller
         // Fetch all licenses.
         List<License> licenses = _db.Licenses.ToList();
 
-        // Mark the licenses that the engineer already has. Add licenses list to ViewBag.
+        // Mark the licenses that the engineer already has. Add licenses to ViewBag.
         foreach (var license in licenses)
         {
             // "Set `IsSelected` true for each of the machine's licenses and false for all the others. This is to render check boxes.
@@ -182,7 +190,7 @@ public class EngineersController : Controller
             return RedirectToAction("details", "engineers", new { id = engineer.EngineerId });
         }
 
-        // Otherwise reload form.
+        // Otherwise, reload form.
         ViewData["FormAction"] = "Edit";
         ViewData["SubmitButton"] = "Update Engineer";
         return RedirectToAction("edit", new { id = engineer.EngineerId });

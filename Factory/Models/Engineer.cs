@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Factory.Models;
 
+// Engineer has a many-to-many relationship with License class via the EngineerLicense class.
 public class Engineer
 {
     public Engineer()
@@ -12,7 +13,8 @@ public class Engineer
 
     public int EngineerId { get; set; }
     public string Name { get; set; }
-    public virtual ICollection<Machine> Machines { get; set; }
+    // Usually as HashSet to quickly match up Ids.
     public ICollection<EngineerLicense> EngineerLicenses { get; set; }
-
+    // Navigation field to easily assign a list of machines to an Engineer model in controller before sending to view.
+    public virtual ICollection<Machine> Machines { get; set; }
 }

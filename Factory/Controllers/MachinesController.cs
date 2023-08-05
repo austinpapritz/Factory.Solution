@@ -36,15 +36,20 @@ public class MachinesController : Controller
         // Fetch the Machine's Licenses to add qualified engineers to model.
         List<int> machineLicenseIds = model.MachineLicenses.Select(ml => ml.LicenseId).ToList();
 
-        // Get all Engineers with their Licenses.
-        var engineers = _db.Engineers
+        // Get all Engineers with their EngineerLicenses.
+        List<Engineer> engineers = _db.Engineers
             .Include(e => e.EngineerLicenses)
             .ToList();
 
-        // Add to model Engineers who have every license to work on the machine.
-        model.Engineers = engineers
-            .Where(e => machineLicenseIds.All(id => e.EngineerLicenses.Any(el => el.LicenseId == id)))
+        // This filters out the engineers that have every license necessary to work on the machine.
+        // For each engineer, we are checking if all the machine's licenses are contained in the engineer's licenses.
+        List<Engineer> qualifiedEngineers = engineers
+            .Where(e => machineLicenseIds.All(ml => e.EngineerLicenses.Any(el => el.LicenseId == id)))
             .ToList();
+
+        // This assigns the list of qualified engineers to the machine.
+        model.Engineers = qualifiedEngineers;
+
 
         return View(model);
     }
