@@ -4,10 +4,10 @@ namespace Factory.Models;
 
 public class Machine
 {
-    // Machine has a many-to-many relationship with License class via the MachineLicense class.
+    // `Machine` has a many-to-many relationship with License class via the `MachineLicense` class.
     public Machine()
     {
-        this.Engineers = new HashSet<Engineer>();
+        this.Engineers = new List<Engineer>();
         this.MachineLicenses = new HashSet<MachineLicense>();
     }
 
@@ -18,7 +18,7 @@ public class Machine
     // Usually as HashSet to efficiently match up Ids.
     public ICollection<MachineLicense> MachineLicenses { get; set; }
 
-    // This allows you to easily assign a list of qualified Engineers to a Machine model in the controller.
+    // This allows you to easily assign a list of qualified engineers to a `Machine` model in the controller.
     public virtual ICollection<Engineer> Engineers { get; set; }
 
 }
