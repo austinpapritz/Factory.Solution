@@ -50,6 +50,17 @@ public class EngineersController : Controller
         // Both Create and Edit routes use `Form.cshtml`
         ViewData["FormAction"] = "Create";
         ViewData["SubmitButton"] = "Add Engineer";
+
+        // Add list of Licenses to ViewBag
+        ViewBag.Licenses = _db.Licenses
+            .Select(l => new License
+            {
+                LicenseId = l.LicenseId,
+                Name = l.Name,
+                IsSelected = false
+            })
+            .ToList();
+
         return View("Form");
     }
 
@@ -71,16 +82,31 @@ public class EngineersController : Controller
 
     public IActionResult Edit(int id)
     {
-        Engineer engineerToBeEdited = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+        // Fetch engineer and included their EngineerLicenses
+        Engineer engineerToBeEdited = _db.Engineers
+            .Include(e => e.EngineerLicenses)
+            .FirstOrDefault(e => e.EngineerId == id);
 
         if (engineerToBeEdited == null)
         {
             return NotFound();
         }
 
-        // Both Create and Edit routes use `Form.cshtml`.
+        // Fetch licenses.
+        List<License> licenses = _db.Licenses.ToList();
+
+        // Mark the licenses that the engineer already has.
+        foreach (var license in licenses)
+        {
+            license.IsSelected = engineerToBeEdited.EngineerLicenses?.Any(el => el.LicenseId == license.LicenseId) ?? false;
+        }
+
+
+
+        // Both Create and Edit routes use `Form.cshtml`. Add Licenses to ViewBag.
         ViewData["FormAction"] = "Edit";
         ViewData["SubmitButton"] = "Update Engineer";
+        ViewBag.Licenses = licenses;
 
         return View("Form", engineerToBeEdited);
     }
