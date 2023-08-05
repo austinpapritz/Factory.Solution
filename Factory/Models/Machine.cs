@@ -4,6 +4,11 @@ namespace Factory.Models;
 
 public class Machine
 {
+    public Machine()
+    {
+        this.Engineers = new HashSet<Engineer>();
+        this.MachineLicenses = new HashSet<MachineLicense>();
+    }
     public int MachineId { get; set; }
     public string Country { get; set; }
     public string Make { get; set; }

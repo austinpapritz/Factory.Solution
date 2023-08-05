@@ -49,4 +49,26 @@ public class MachinesController : Controller
         return View(model);
     }
 
+    [HttpGet]
+    public IActionResult Create()
+    {
+        // Both Create and Edit routes use `Form.cshtml`
+        ViewData["FormAction"] = "Create";
+        ViewData["SubmitButton"] = "Add Machine";
+
+        // Add list of Licenses to ViewBag
+        ViewBag.Licenses = _db.Licenses
+            .Select(l => new License
+            {
+                LicenseId = l.LicenseId,
+                Name = l.Name,
+                IsSelected = false
+            })
+            .ToList();
+
+        return View("Form");
+    }
+
+
+
 }
