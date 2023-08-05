@@ -15,7 +15,7 @@ public class Machine
     public string Country { get; set; }
     public string Make { get; set; }
     public string Model { get; set; }
-    // Usually as HashSet to quickly match up Ids.
+    // Usually as HashSet to efficiently match up Ids.
     public ICollection<MachineLicense> MachineLicenses { get; set; }
 
     // This allows you to easily assign a list of qualified Engineers to a Machine model in the controller.

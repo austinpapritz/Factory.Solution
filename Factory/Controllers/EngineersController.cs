@@ -35,15 +35,16 @@ public class EngineersController : Controller
             return NotFound();
         }
 
-        // Get the engineer's EngineerLicenses and assign the corresponding LicenseId to a HashSet.
-        // .Contains() instantly finds items in HashSet, whereas a List must be searched linearly.
-        HashSet<int> engineerLicenseIds = model.EngineerLicenses.Select(el => el.LicenseId).ToHashSet();
+        // Get the engineer's `EngineerLicenses` and assign the corresponding `LicenseId` to a HashSet.
+        // .Contains() directly finds items in HashSet, whereas a List must be searched linearly.
+        HashSet<int> licenseIdsForEngineer = model.EngineerLicenses.Select(el => el.LicenseId).ToHashSet();
 
-        // This filters out the machines that the engineer is licensed to repair.
-        // For every machine's MachineLicenses, check if the corresponding LicenseId matches the LicenseIds on the engineer's EngineerLicenses.
+        // This filters out the machines that the engineer is licensed to repair. For every machine get their 
+        // list of `MachineLicenses`. See if the `LicenseId`s in the `MachineLicenses` all have  matching 
+        // `LicenseId`s in the Engineer's list of `EngineerLicenses` (which we assigned to `licenseIdsForEngineer`above).
         List<Machine> qualifiedMachines = _db.Machines
             .Include(m => m.MachineLicenses)
-            .Where(m => m.MachineLicenses.All(ml => engineerLicenseIds.Contains(ml.LicenseId)))
+            .Where(m => m.MachineLicenses.All(ml => licenseIdsForEngineer.Contains(ml.LicenseId)))
             .ToList();
 
         // This assigns the list of machines that the engineer can repair to the model.

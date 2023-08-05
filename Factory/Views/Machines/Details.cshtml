@@ -12,12 +12,20 @@
 
 <h3>Required licenses: </h3>
 
-<ul>
-@foreach (MachineLicense ml in Model.MachineLicenses)
+@if (Model.MachineLicenses.Count == 0)
 {
-    <li>@ml.License.Name</li>
+    <p>None</p>
 }
-</ul>
+else
+{
+
+    <ul>
+    @foreach (MachineLicense ml in Model.MachineLicenses)
+    {
+        <li>@ml.License.Name</li>
+    }
+    </ul>
+}
 
 <h3>Qualified Engineers</h3>
 

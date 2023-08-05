@@ -13,7 +13,7 @@ public class Engineer
 
     public int EngineerId { get; set; }
     public string Name { get; set; }
-    // Usually as HashSet to quickly match up Ids.
+    // Usually as HashSet to efficiently match up Ids.
     public ICollection<EngineerLicense> EngineerLicenses { get; set; }
     // Navigation field to easily assign a list of machines to an Engineer model in controller before sending to view.
     public virtual ICollection<Machine> Machines { get; set; }
