@@ -33,21 +33,26 @@ public class MachinesController : Controller
             return NotFound();
         }
 
-        // Fetch the Machine's Licenses to add qualified engineers to model.
-        HashSet<int> machineLicenseIds = model.MachineLicenses.Select(ml => ml.LicenseId).ToList();
+        // Get the machine's `MachineLicenses` and assign the corresponding `LicenseId` to a HashSet.
+        // .Any() directly finds items in HashSet, whereas a List must be searched linearly.
+        HashSet<int> licenseIdsForMachine = model.MachineLicenses.Select(ml => ml.LicenseId).ToHashSet();
 
-        // Get all Engineers with their EngineerLicenses.
+        // Get all Engineers with their `EngineerLicenses`.
         List<Engineer> engineers = _db.Engineers
             .Include(e => e.EngineerLicenses)
             .ToList();
 
-        // This filters out the engineers that have every license necessary to work on the machine.
-        // For each engineer, we are checking if all the machine's licenses are contained in the engineer's licenses.
+        // This filters out the engineers that have every license necessary to work on the machine. For each engineer,
+        // we check if the `LicenseId`s for each `MachineLicense` of this machine (assigned to `licenseIdsForMachine` above)
+        // has a corresponding `LicenseId` in the engineer's list of `EngineerLicenses`.
+        // .Where() returns a collection, .All() returns true if the condition is true for ALL elements, .Any() returns
+        // true if ANY element fulfills the condition. Thus, we go through ALL the required `LicenseId`, and for every one, 
+        // see if ANY of an engineer's `MachineLicenses` match it.
         List<Engineer> qualifiedEngineers = engineers
-            .Where(e => machineLicenseIds.All(ml => e.EngineerLicenses.Any(el => el.LicenseId == id)))
+            .Where(e => licenseIdsForMachine.All(li => e.EngineerLicenses.Any(el => el.LicenseId == li)))
             .ToList();
 
-        // This assigns the list of qualified engineers to the machine.
+        // This assigns the list of qualified engineers to the machine model.
         model.Engineers = qualifiedEngineers;
 
 
