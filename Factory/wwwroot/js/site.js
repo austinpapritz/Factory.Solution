@@ -6,25 +6,25 @@ deleteLinks.forEach((deleteLink) => {
     deleteLink.addEventListener('click', (e) => {
         e.preventDefault(); 
 
-        // Grab the engineerId from the data-id attribute.
-        let engineerId = deleteLink.getAttribute('data-id');
-        let url = "/Engineers/Delete/" + engineerId;
+        // Grab the Id from the data-id attribute.
+        let id = deleteLink.getAttribute('data-id');
+        let url = deleteLink.getAttribute('data-url')
         
         // Ask user for confirmation.
-        if (confirm('Are you sure you want to delete this engineer?')) {
+        if (confirm('Are you sure you want to delete?')) {
             // Initiates an AJAX request on confirmation.
             $.ajax({
                 // Route and type of request.
                 url: url,
                 type: 'POST',
                 // Delete route requires an Id.
-                data: { id: engineerId },
+                data: { id: id },
                 // The controller sends back Ok() if successful.
                 success: function(result) {
-                    location.reload();
+                    location.replace("/");
                 },
                 error: function(result) {
-                    alert("Error deleting engineer. Please try again later.");
+                    alert("Error while deleting. Please try again later.");
                 }
             });
         }

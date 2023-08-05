@@ -194,6 +194,24 @@ public class MachinesController : Controller
         return RedirectToAction("edit", new { id = machine.MachineId });
     }
 
+    // Handled by site.js.
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+        Machine machineToBeDeleted = _db.Machines.FirstOrDefault(m => m.MachineId == id);
+
+        if (machineToBeDeleted == null)
+        {
+            return NotFound();
+        }
+
+        _db.Machines.Remove(machineToBeDeleted);
+        _db.SaveChanges();
+
+        // Return HTTP 200 OK to AJAX request, signalling successful deletion.
+        return Ok();
+    }
+
     // Method to validate model in db.
     private bool MachineExists(int id)
     {
