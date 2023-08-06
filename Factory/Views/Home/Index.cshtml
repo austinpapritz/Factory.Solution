@@ -37,7 +37,7 @@
                 @foreach (Machine machine in @ViewBag.Machines)
                 {
                         <li>
-                            @machine.Make @machine.Model
+                            @machine.MakeModel
                             <a href="/machines/details/@machine.MachineId">🔎</a>
                             <a href="/machines/edit/@machine.MachineId">✏️</a>
                             <a href="#" data-id="@machine.MachineId" data-url="/machines/delete/@machine.MachineId" class="delete-link">❌</a>

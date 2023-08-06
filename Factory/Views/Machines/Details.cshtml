@@ -1,10 +1,10 @@
 @{
-    ViewData["Title"] = $"{@Model.Make} {@Model.Model} Details";
+    ViewData["Title"] = $"{@Model.MakeModel} Details";
 }
 
 
 <h1>
-    @Model.Make • @Model.Model 
+    @Model.MakeModel
     <a href="/machines/edit/@Model.MachineId">✏️</a>
     <a href="#" data-id="@Model.MachineId" data-url="/machines/delete/@Model.MachineId" class="delete-link">❌</a>
 </h1>
