@@ -1,48 +1,49 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome to Dr. Sillystringz</h1>
-</div>
-
-<div class="lists-container">
-    <div class="content-container">
-        @if (@ViewBag.Engineers.Count == 0)
-        {
-            <h3>No Engineers</h3>
-        }
-
-        <ul>
-            @foreach (Engineer engineer in @ViewBag.Engineers)
-            {
-                    <li>
-                        @engineer.Name
-                        <a href="/engineers/details/@engineer.EngineerId">🔎</a>
-                        <a href="/engineers/edit/@engineer.EngineerId">✏️</a>
-                        <a href="#" data-id="@engineer.EngineerId" data-url="/engineers/delete/@engineer.EngineerId" class="delete-link">❌</a>
-                    </li>
-            }
-        </ul>
+    <div class="text-center">
+        <h1 class="display-4">Welcome to Dr. Sillystringz</h1>
     </div>
 
-
-    <div class="content-container">
-        @if (@ViewBag.Machines.Count == 0)
-        {
-            <h3>No Machines</h3>
-        }
-
-        <ul>
-            @foreach (Machine machine in @ViewBag.Machines)
+<div class="home-container">
+    <div class="lists-container">
+        <div class="content-container">
+            @if (@ViewBag.Engineers.Count == 0)
             {
-                    <li>
-                        @machine.Make @machine.Model
-                        <a href="/machines/details/@machine.MachineId">🔎</a>
-                        <a href="/machines/edit/@machine.MachineId">✏️</a>
-                        <a href="#" data-id="@machine.MachineId" data-url="/machines/delete/@machine.MachineId" class="delete-link">❌</a>
-                    </li>
+                <h3>No Engineers</h3>
             }
-        </ul>
+
+            <ul>
+                @foreach (Engineer engineer in @ViewBag.Engineers)
+                {
+                        <li>
+                            @engineer.Name
+                            <a href="/engineers/details/@engineer.EngineerId">🔎</a>
+                            <a href="/engineers/edit/@engineer.EngineerId">✏️</a>
+                            <a href="#" data-id="@engineer.EngineerId" data-url="/engineers/delete/@engineer.EngineerId" class="delete-link">❌</a>
+                        </li>
+                }
+            </ul>
+        </div>
+
+
+        <div class="content-container">
+            @if (@ViewBag.Machines.Count == 0)
+            {
+                <h3>No Machines</h3>
+            }
+
+            <ul>
+                @foreach (Machine machine in @ViewBag.Machines)
+                {
+                        <li>
+                            @machine.Make @machine.Model
+                            <a href="/machines/details/@machine.MachineId">🔎</a>
+                            <a href="/machines/edit/@machine.MachineId">✏️</a>
+                            <a href="#" data-id="@machine.MachineId" data-url="/machines/delete/@machine.MachineId" class="delete-link">❌</a>
+                        </li>
+                }
+            </ul>
+        </div>
     </div>
 </div>

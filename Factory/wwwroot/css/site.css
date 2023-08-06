@@ -21,11 +21,20 @@ body {
   margin-bottom: 60px;
 }
 
+.home-container {
+  height: 100%;
+  background: url('/bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .form-group .btn {
   margin-top: 5px;
 }
 
 .lists-container {
+  margin: 0 20%;
+  background: rgba(255, 255, 255, 0.852);
   display: flex;
   justify-content: center;
   align-items: flex-start;

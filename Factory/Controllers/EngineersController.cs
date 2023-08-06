@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; // Putting SelectList in ViewBag
 using Microsoft.EntityFrameworkCore;
 using Factory.Models;
 using System.Collections.Generic;
@@ -15,7 +14,6 @@ public class EngineersController : Controller
         _db = db;
     }
 
-
     public ActionResult Index()
     {
         List<Engineer> model = _db.Engineers.ToList();
@@ -24,7 +22,8 @@ public class EngineersController : Controller
 
     public IActionResult Details(int id)
     {
-        // Get the engineer that has the EngineerId that matches the url id, include the EngineerLicenses and corresponding Licenses too.
+        // Get the engineer with the `EngineerId` that matches the url id, 
+        // include the `EngineerLicenses`, then include each corresponding `License`.
         Engineer model = _db.Engineers
             .Include(e => e.EngineerLicenses)
             .ThenInclude(el => el.License)
@@ -35,7 +34,7 @@ public class EngineersController : Controller
             return NotFound();
         }
 
-        // Get the engineer's `EngineerLicenses` and assign the corresponding `LicenseId` to a HashSet.
+        // Get the engineer's `EngineerLicenses` and assign the corresponding `LicenseId`s to a HashSet.
         // .Contains() directly finds items in HashSet, whereas a List must be searched linearly.
         HashSet<int> licenseIdsForEngineer = model.EngineerLicenses.Select(el => el.LicenseId).ToHashSet();
 
@@ -60,7 +59,7 @@ public class EngineersController : Controller
         ViewData["FormAction"] = "Create";
         ViewData["SubmitButton"] = "Add Engineer";
 
-        // Add list of Licenses to ViewBag, setting `IsSelected = false' so that license checklist start unchecked.
+        // Add list of `Licenses` to ViewBag, setting `IsSelected = false' so that the license checklist start unchecked.
         ViewBag.Licenses = _db.Licenses
             .Select(l => new License
             {
@@ -79,16 +78,16 @@ public class EngineersController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Create a new EngineerLicenses HashSet to populate with selected licenses.
+            // Create a new `EngineerLicenses` HashSet to populate with selected licenses.
             engineer.EngineerLicenses = new HashSet<EngineerLicense>();
-            // Add selected Licenses to engineer's EngineerLicenses list.
+            // Add the selected licenses to engineer's `EngineerLicenses` list.
             foreach (int licenseId in selectedLicenseIds)
             {
-                // Create a new EngineerLicense for every License selected, assign the LicenseId to it.
+                // Create a new `EngineerLicense` for every `License` selected, assign the `LicenseId` to it.
                 engineer.EngineerLicenses.Add(new EngineerLicense { LicenseId = licenseId });
             }
 
-            // Add engineer to Engineer's table.
+            // Add engineer to Engineers table.
             _db.Engineers.Add(engineer);
             _db.SaveChanges();
 
@@ -112,7 +111,7 @@ public class EngineersController : Controller
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        // Fetch engineer and included their EngineerLicenses.
+        // Fetch engineer and included their `EngineerLicenses`.
         Engineer engineerToBeEdited = _db.Engineers
             .Include(e => e.EngineerLicenses)
             .FirstOrDefault(e => e.EngineerId == id);
@@ -125,11 +124,11 @@ public class EngineersController : Controller
         // Fetch all licenses.
         List<License> licenses = _db.Licenses.ToList();
 
-        // Mark the licenses that the engineer already has. Add licenses to ViewBag.
+        // Mark the licenses that the engineer already has. Add licenses to `ViewBag`.
         foreach (var license in licenses)
         {
-            // "Set `IsSelected` true for each of the machine's licenses and false for all the others. This is to render check boxes.
-            // `?. [..] ?? false` covers if `MachineLincenses` is null, it'll just set every `license.IsSelected` to `false`.
+            // "Set `IsSelected` true for each of the engineer's licenses and false for all the others. This is to render check boxes.
+            // `?. [..] ?? false` covers if `EngineerLincenses` is null, it'll just set every `license.IsSelected` to `false`.
             license.IsSelected = engineerToBeEdited.EngineerLicenses?.Any(el => el.LicenseId == license.LicenseId) ?? false;
         }
         ViewBag.Licenses = licenses;
@@ -166,7 +165,6 @@ public class EngineersController : Controller
                 dbEngineer.Name = engineer.Name;
 
                 // Clear the current licenses and add the selected ones.
-                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST.
                 dbEngineer.EngineerLicenses.Clear();
                 foreach (var licenseId in selectedLicenseIds)
                 {

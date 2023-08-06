@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; // Putting SelectList in ViewBag
 using Microsoft.EntityFrameworkCore;
 using Factory.Models;
 using System.Collections.Generic;
@@ -23,6 +22,8 @@ public class MachinesController : Controller
 
     public IActionResult Details(int id)
     {
+        // Get the machine with the `MachineId` that matches the url id, 
+        // include the `MachineLicenses`, then include each corresponding `License`.
         Machine model = _db.Machines
             .Include(m => m.MachineLicenses)
             .ThenInclude(ml => ml.License)
@@ -43,11 +44,11 @@ public class MachinesController : Controller
             .ToList();
 
         // This filters out the engineers that have every license necessary to work on the machine. For each engineer,
-        // we check if the `LicenseId`s for each `MachineLicense` of this machine (assigned to `licenseIdsForMachine` above)
+        // we check if the `LicenseId`s for each `MachineLicense` for this machine (assigned to `licenseIdsForMachine` above)
         // has a corresponding `LicenseId` in the engineer's list of `EngineerLicenses`.
         // .Where() returns a collection, .All() returns true if the condition is true for ALL elements, .Any() returns
         // true if ANY element fulfills the condition. Thus, we go through ALL the required `LicenseId`, and for every one, 
-        // see if ANY of an engineer's `MachineLicenses` match it.
+        // see if ANY of an engineer's `EngineerLicenses` match it.
         List<Engineer> qualifiedEngineers = engineers
             .Where(e => licenseIdsForMachine.All(li => e.EngineerLicenses.Any(el => el.LicenseId == li)))
             .ToList();
@@ -66,7 +67,7 @@ public class MachinesController : Controller
         ViewData["FormAction"] = "Create";
         ViewData["SubmitButton"] = "Add Machine";
 
-        // Add list of Licenses to ViewBag.
+        // Add list of `Licenses` to `ViewBag`.
         ViewBag.Licenses = _db.Licenses
             .Select(l => new License
             {
@@ -85,10 +86,11 @@ public class MachinesController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Add selected Licenses to machines's MachineLicenses list.
+            // Add selected licenses to machines's `MachineLicenses` list.
             machine.MachineLicenses = new List<MachineLicense>();
             foreach (var licenseId in selectedLicenseIds)
             {
+                // Create a new `MachineLicense` for every `License` selected, assign the `LicenseId` to it.
                 machine.MachineLicenses.Add(new MachineLicense { LicenseId = licenseId });
             }
 
@@ -116,7 +118,7 @@ public class MachinesController : Controller
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        // Fetch machine and included their MachineLicenses.
+        // Fetch machine and included its `MachineLicenses`.
         Machine machineToBeEdited = _db.Machines
             .Include(m => m.MachineLicenses)
             .FirstOrDefault(m => m.MachineId == id);
@@ -129,7 +131,7 @@ public class MachinesController : Controller
         // Fetch all licenses.
         List<License> licenses = _db.Licenses.ToList();
 
-        // Mark the licenses that the machine already has. Add licenses list to ViewBag.
+        // Mark the licenses that the machine already has. Add licenses list to `ViewBag`.
         foreach (var license in licenses)
         {
             // "Set `IsSelected` true for each of the machine's licenses and false for all the others. This is to render check boxes.
@@ -162,7 +164,7 @@ public class MachinesController : Controller
 
             try
             {
-                // Load the machine from the database, including the current licenses.
+                // Load the machine from the database, including its `MachineLicenses`.
                 var dbMachine = _db.Machines
                     .Include(m => m.MachineLicenses)
                     .Single(m => m.MachineId == id);
@@ -173,7 +175,6 @@ public class MachinesController : Controller
                 dbMachine.Model = machine.Model;
 
                 // Clear the current licenses and add the selected ones.
-                // REFACTOR THIS SO THAT YOU DON'T NEED TO CLEAR OLD LIST.
                 dbMachine.MachineLicenses.Clear();
                 foreach (var licenseId in selectedLicenseIds)
                 {
