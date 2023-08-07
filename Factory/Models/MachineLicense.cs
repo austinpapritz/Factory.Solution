@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Factory.Models;
 
-public class MachineLicense
+public class MachineLicense : ILicenseable
 {
     // This class matches a machine's `MachineId` with the `LicenseId`s of the licenses required to repair it.
     // If the "License" part of both the `MachineLicense` and `EngineerLicense` are the same, 
