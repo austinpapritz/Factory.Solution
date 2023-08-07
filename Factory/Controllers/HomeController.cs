@@ -7,12 +7,11 @@ using System.Diagnostics;
 
 namespace Factory.Controllers;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
-    private readonly FactoryContext _db;
-    public HomeController(FactoryContext db)
+    // Pass db to base constructor.
+    public HomeController(FactoryContext db) : base(db)
     {
-        _db = db;
     }
 
     public IActionResult Index()

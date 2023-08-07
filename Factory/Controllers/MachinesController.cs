@@ -6,14 +6,12 @@ using System.Diagnostics;
 
 namespace Factory.Controllers;
 
-public class MachinesController : Controller
+public class MachinesController : BaseController
 {
-    private readonly FactoryContext _db;
-    public MachinesController(FactoryContext db)
+    // Pass db to base constructor.
+    public MachinesController(FactoryContext db) : base(db)
     {
-        _db = db;
     }
-
     public ActionResult Index()
     {
         List<Machine> model = _db.Machines.ToList();
@@ -223,9 +221,4 @@ public class MachinesController : Controller
         return Ok();
     }
 
-    // Method to validate model in db.
-    private bool MachineExists(int id)
-    {
-        return _db.Machines.Any(m => m.MachineId == id);
-    }
 }

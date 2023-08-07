@@ -5,12 +5,11 @@ using System.Diagnostics;
 
 namespace Factory.Controllers;
 
-public class LicensesController : Controller
+public class LicensesController : BaseController
 {
-    private readonly FactoryContext _db;
-    public LicensesController(FactoryContext db)
+    // Pass db to base constructor.
+    public LicensesController(FactoryContext db) : base(db)
     {
-        _db = db;
     }
 
     [HttpGet]

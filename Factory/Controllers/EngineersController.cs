@@ -6,12 +6,11 @@ using System.Diagnostics;
 
 namespace Factory.Controllers;
 
-public class EngineersController : Controller
+public class EngineersController : BaseController
 {
-    private readonly FactoryContext _db;
-    public EngineersController(FactoryContext db)
+    // Pass db to base constructor.
+    public EngineersController(FactoryContext db) : base(db)
     {
-        _db = db;
     }
 
     public ActionResult Index()
@@ -213,9 +212,4 @@ public class EngineersController : Controller
         return Ok();
     }
 
-    // Method to validate model in db.
-    private bool EngineerExists(int id)
-    {
-        return _db.Engineers.Any(e => e.EngineerId == id);
-    }
 }

@@ -4,7 +4,7 @@ namespace Factory.Models;
 
 public class Machine
 {
-    // `Machine` has a many-to-many relationship with License class via the `MachineLicense` class.
+    // `Machine` has a many-to-many relationship with `License` class via the `MachineLicense` class.
     public Machine()
     {
         this.Engineers = new List<Engineer>();
