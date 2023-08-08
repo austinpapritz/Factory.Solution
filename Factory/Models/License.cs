@@ -5,8 +5,8 @@ namespace Factory.Models;
 
 public class License
 {
-    // A License has a many-to-many relationship with both Engineer (via EngineerLicense class) 
-    // and Machine (via MachineLicense class). As such, it is the middle-man between the licenses
+    // A License has a many-to-many relationship with both `Engineer` (via `EngineerLicense` class) 
+    // and `Machine` (via `MachineLicense` class). As such, it is the middle-man between the licenses
     // that a machine requires to be repaired, and all the licenses that an engineer has.
 
     public int LicenseId { get; set; }
