@@ -1,8 +1,7 @@
+using Factory.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Factory.Models;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Factory.Controllers;
 

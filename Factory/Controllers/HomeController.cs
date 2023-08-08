@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; // Putting SelectList in ViewBag
+﻿using Factory.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Factory.Models;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Factory.Controllers;
 
@@ -23,5 +21,4 @@ public class HomeController : BaseController
         ViewBag.Machines = machines;
         return View();
     }
-
 }

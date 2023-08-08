@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
 using Factory.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Factory.Controllers;
 
 public class LicensesController : BaseController
 {
     // Pass db to base constructor.
-    public LicensesController(FactoryContext db) : base(db)
+    public LicensesController(FactoryContext db, BaseService baseService) : base(db, baseService)
     {
     }
 
