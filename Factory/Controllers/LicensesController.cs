@@ -7,7 +7,7 @@ namespace Factory.Controllers;
 public class LicensesController : BaseController
 {
     // Pass db to base constructor.
-    public LicensesController(FactoryContext db, BaseService baseService) : base(db, baseService)
+    public LicensesController(FactoryContext db) : base(db)
     {
     }
 
